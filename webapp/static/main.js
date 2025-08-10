@@ -39,20 +39,13 @@ const testData = {
         ]
     },
     shuttles: [
-        { "id": 3, "capacity": 3 },
-        { "id": 2, "capacity": 3 },
-        { "id": 4, "capacity": 2 },
-        { "id": 5, "capacity": 2 },
-        { "id": 6, "capacity": 2 },
-        { "id": 7, "capacity": 3 },
-        { "id": 8, "capacity": 3 },
-        { "id": 9, "capacity": 2 },
-        { "id": 10, "capacity": 2 },
-        { "id": 11, "capacity": 5 },
-        { "id": 13, "capacity": 3 },
-        { "id": 14, "capacity": 4 },
-        { "id": 15, "capacity": 4 },
-        { "id": 16, "capacity": 4 }
+        { "id": 1, "capacity": 5 },
+        { "id": 2, "capacity": 5 },
+        { "id": 3, "capacity": 4 },
+        { "id": 4, "capacity": 4 },
+        { "id": 5, "capacity": 4 },
+        { "id": 6, "capacity": 4 },
+        { "id": 7, "capacity": 4 }
     ]
 };
 
@@ -83,8 +76,12 @@ const map = L.map('map', {
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '',
+    subdomains: 'abcd',
     maxZoom: 20
 }).addTo(map);
+
+// Remove the default "Leaflet" prefix
+map.attributionControl.setPrefix(false);
 
 /* containers */
 window.clusterLayers = []; // polygons + route controls
@@ -199,8 +196,14 @@ async function showClusters(routes) {
 
         // Use Leaflet Routing Machine to draw road-following path.
         // Using default OSRM demo server (suitable for prototype)
+        // I have added a timeout to handle slow responses from the server
+        const router = L.Routing.osrmv1({
+            serviceUrl: 'https://router.project-osrm.org/route/v1',
+            timeout: 30 * 1000 // Set timeout to 30 seconds
+        });
         const control = L.Routing.control({
             waypoints: waypoints,
+            router: router,
             lineOptions: { styles: [{ color: color, weight: 4.2, opacity: 0.95 }] },
             createMarker: () => null,
             addWaypoints: false,
@@ -310,3 +313,7 @@ clearBtn.addEventListener('click', () => {
  Clean start: show message & placeholder cluster
 -------------------------------*/
 setMessage('Ready. Press "Run Clustering".', 'info');
+
+// Populate the overlay counts on page load
+document.getElementById('empCount').textContent = testData.locations.employees.length;
+document.getElementById('shuttleCount').textContent = testData.shuttles.length;
