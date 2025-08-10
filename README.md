@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 # clustering-demo
-=======
 # Shuttle Route Optimization System
 
 Anntelligent routing system that optimizes shuttle routes for employee pickup and drop-off services. The system uses advanced algorithms to calculate the most efficient routes while considering vehicle capacities, geographic distances, and directional optimization.
@@ -116,4 +114,3 @@ uvicorn main:app --host 127.0.0.1 --port 8000
 Alternatively, configure your firewall to restrict external access.
 
 
->>>>>>> b1af3ea (init)
