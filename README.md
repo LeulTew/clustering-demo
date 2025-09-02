@@ -1,116 +1,147 @@
-# clustering-demo
-# Shuttle Route Optimization System
+# 🚐 Shuttle Route Optimization System
 
-Anntelligent routing system that optimizes shuttle routes for employee pickup and drop-off services. The system uses advanced algorithms to calculate the most efficient routes while considering vehicle capacities, geographic distances, and directional optimization.
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## Features
-- 🚐 Optimizes routes for multiple shuttles simultaneously
-- 📍 Handles real-world geographic coordinates
-- ⚖️ Respects vehicle capacity constraints
-- 🧭 Considers bearing/direction for route smoothness
-- 🔄 Ensures all employees are assigned exactly once
-- 🌐 RESTful API interface
-- ✅ Built-in route verification
+A smart routing system that optimizes shuttle routes for employee transportation. It uses advanced algorithms to create efficient pickup routes while respecting vehicle capacities and real-world geography.
 
-## Technology Stack
-- Python 3.x
-- Google OR-Tools for route optimization
-- FastAPI for REST API
-- Haversine formula for geographic calculations
-- JSON for data storage and API communication
+## ✨ Quick Start
 
-## Algorithm Overview
+Get up and running in minutes:
 
-The core of the system is a sophisticated optimization algorithm that balances distance and route directness.
+### Installation
 
-1.  **Distance and Bearing Calculation**:
-    *   The system calculates the haversine distance between all pairs of locations (HQ and employees) to get accurate real-world distances.
-    *   It also calculates the bearing (direction) between points. This is used to penalize sharp turns, leading to smoother and more efficient routes.
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/LeulTew/clustering-demo.git
+   cd clustering-demo
+   ```
 
-2.  **Cost Function**:
-    *   A combined cost function is used for optimization. It's a weighted sum of the travel distance and a penalty for changing direction. This ensures that the solver doesn't just find the shortest path, but also a practical one.
+2. **Set up environment**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
 
-3.  **Route Optimization**:
-    *   The problem is modeled as a Vehicle Routing Problem (VRP).
-    *   Google OR-Tools is used to solve the VRP.
-    *   The solver first finds an initial solution using a `PATH_CHEAPEST_ARC` strategy and then improves upon it using a `GUIDED_LOCAL_SEARCH` metaheuristic.
-    *   Shuttle capacity constraints are strictly enforced.
+3. **Start the services**
+   ```bash
+   # Terminal 1: Start the API server
+   uvicorn src.main:app --host 127.0.0.1 --port 8000
 
-4.  **Verification**:
-    *   After a solution is found, it is verified to ensure that every employee is assigned to exactly one shuttle and that no shuttle's capacity is exceeded.
+   # Terminal 2: Start the web interface
+   python webapp/app.py
+   ```
 
-## API Endpoints
+4. **Open your browser**
+   - Visit `http://localhost:5000`
+   - Click "Run Clustering" to see optimized routes
 
-The service is exposed via a RESTful API.
+## 🎯 What It Does
 
-### `POST /clustering`
+This system solves the complex problem of assigning employees to shuttle routes efficiently. Imagine you have:
+- A headquarters location
+- Multiple employee locations across a city
+- Limited shuttle capacity
+- Need to minimize travel time and distance
 
-This is the main endpoint for assigning routes.
+The algorithm finds the optimal way to group employees into routes that shuttles can follow, ensuring everyone gets picked up without exceeding capacity.
 
-**Request Body:**
+## 🚀 Features
 
+- **Multi-Shuttle Optimization**: Handles multiple vehicles simultaneously
+- **Real Geography**: Uses accurate distance and bearing calculations
+- **Capacity Aware**: Respects vehicle passenger limits
+- **Smooth Routes**: Penalizes sharp turns for practical driving
+- **Verification**: Ensures every employee is assigned exactly once
+- **Web Interface**: Interactive map with route visualization
+- **REST API**: Easy integration with other systems
+
+## 🛠️ Tech Stack
+
+- **Backend**: Python 3.x with FastAPI
+- **Optimization**: Google OR-Tools for route solving
+- **Geography**: Haversine formula for real-world distances
+- **Frontend**: Flask web app with Leaflet maps
+- **Routing**: OSRM for road-following route visualization
+
+## 🔧 How It Works
+
+### The Algorithm
+
+1. **Calculate Distances**: Uses the haversine formula to find real-world distances between all locations
+2. **Consider Direction**: Calculates bearings to avoid inefficient route changes
+3. **Build Cost Model**: Combines distance with directional penalties for realistic routing
+4. **Solve Optimization**: Applies Google OR-Tools to find optimal employee assignments
+5. **Verify Results**: Double-checks that all constraints are met
+
+### Route Visualization
+
+The web interface shows:
+- Employee locations as markers
+- Optimized routes as colored lines
+- Shuttle capacity usage
+- Interactive map controls
+
+## 📡 API Reference
+
+### POST /clustering
+
+Assign employees to shuttle routes.
+
+**Request:**
 ```json
 {
   "locations": {
-    "HQ": [
-      -1.286389,
-      36.817223
-    ],
+    "HQ": [9.0222, 38.7468],
     "employees": [
       {
         "id": "emp1",
-        "latitude": -1.292066,
-        "longitude": 36.821945
+        "latitude": 9.0328,
+        "longitude": 38.7634
       }
     ]
   },
   "shuttles": [
     {
       "id": 1,
-      "capacity": 10
+      "capacity": 5
     }
   ]
 }
 ```
 
-**Response Body (Success):**
-
+**Response:**
 ```json
 {
   "success": true,
   "routes": [
     {
       "shuttle_id": 1,
-      "employees": [
-        "emp1"
-      ]
+      "employees": ["emp1"]
     }
   ],
   "verification_passed": true
 }
 ```
 
-### `GET /health`
+### GET /health
 
-A simple health check endpoint.
+Check if the service is running.
 
-**Response Body:**
+## 🔒 Security
 
-```json
-{
-  "status": "ok",
-  "service": "route-assignment"
-}
-```
+For production use:
+- Bind FastAPI to localhost only
+- Use HTTPS in production
+- Consider authentication for API access
 
-## Security Note
+## 🤝 Contributing
 
-To prevent direct access to FastAPI endpoints, ensure that FastAPI is bound only to localhost. For example, when starting FastAPI with uvicorn, use:
+Found a bug or have an idea? Open an issue or submit a pull request!
 
-```bash
-uvicorn main:app --host 127.0.0.1 --port 8000
-```
+## 📄 License
 
-Alternatively, configure your firewall to restrict external access.
+MIT License - see [LICENSE](LICENSE) for details.
 
 

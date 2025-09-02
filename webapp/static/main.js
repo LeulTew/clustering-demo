@@ -53,7 +53,7 @@ const testData = {
  Utilities: color palette, helpers
 -------------------------------*/
 const PALETTE = [
-    '#7DD3FC', '#A7F3D0', '#FBCFE8', '#FDE68A', '#C7B2FF', '#FBC7A4', '#93C5FD', '#FCA5A5'
+    '#EF4444', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#F97316', '#6B7280'
 ];
 function getColor(i) { return PALETTE[i % PALETTE.length]; }
 function colorWithAlpha(hex, alpha = 0.18) {
